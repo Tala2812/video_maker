@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Создатель вертикального видео</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .flash-messages {
+            margin: 10px 0;
+        }
+        .alert {
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .alert-success { background: #d4edda; color: #155724;}
+        .alert-danger { background: #f8d7da; color: #721c24;}
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+    <div class="container">
+        <h1>Мастер вертикального видео</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="images">Выберите изображения:</label>
+                <input type="file" id="images" name="images" multiple accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label for="audio">Выберите аудиофайл:</label>
+                <input type="file" id="audio" name="audio" accept="audio/*" required>
+            </div>
+            <div class="form-group">
+                <label for="cover_text">Текст обложки:</label>
+                <input type="text" id="cover_text" name="cover_text" value="Моя обложка">
+            </div>
+            <div class="form-group">
+                <label for="output_filename">Имя выходного файла:</label>
+                <input type="text" id="output_filename" name="output_filename" value="output.mp4">
+            </div>
+            <div class="form-group">
+                <label for="duration">Длительность кадра (сек):</label>
+                <input type="number" id="duration" name="duration" step="0.1" min="1" max="10" value="4">
+            </div>
+            <div class="form-group">
+                <label for="fps">Частота кадров (FPS):</label>
+                <input type="number" id="fps" name="fps" min="10" max="60" value="30">
+            </div>
+            <div class="form-group">
+                <label for="transition">Тип перехода:</label>
+                <select id="transition" name="transition">
+                    <option value="1">Плавное затухание</option>
+                    <option value="2">Сдвиг вправо</option>
+                    <option value="3">Сдвиг вниз</option>
+                </select>
+            </div>
+            <button type="submit">Создать видео</button>
+        </form>
+    </div>
+</body>
+</html>
