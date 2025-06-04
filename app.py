@@ -85,13 +85,17 @@ def apply_transition(clip1, clip2, transition_type):
     duration = TRANSITION_DURATION
 
     if transition_type == TransitionType.FADE:
-        return concatenate_videoclips([clip1, clip2], method="compose", transition=clip1.duration / 2)
-
+        return CompositeVideoClip([
+            clip1.set_duration(clip1.duration - duration / 2),
+            clip2.set_start(clip1.duration - duration / 2).crossfadein(duration / 2),
+            clip1.set_start(clip1.duration - duration).crossfadein(duration),
+            clip2.set_start(clip1.duration - duration).crossfadein(duration)
+        ])
     elif transition_type == TransitionType.SLIDE_RIGHT:
         def slide_right(t):
             if t < duration:
-                return (min(0, -clip2.w + int((t / duration) * clip2.w)), 'center')
-            return ('center', 'center')
+                return min(0, -clip2.w + int((t / duration) * clip2.w)), 'center'
+            return 'center', 'center'
 
         moving_clip = clip2.set_position(slide_right)
         return CompositeVideoClip([
@@ -102,8 +106,8 @@ def apply_transition(clip1, clip2, transition_type):
     elif transition_type == TransitionType.SLIDE_DOWN:
         def slide_down(t):
             if t < duration:
-                return ('center', min(0, -clip2.h + int((t / duration) * clip2.h)))
-            return ('center', 'center')
+                return 'center', min(0, -clip2.h + int((t / duration) * clip2.h))
+            return 'center', 'center'
 
         moving_clip = clip2.set_position(slide_down)
         return CompositeVideoClip([
